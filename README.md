@@ -11,14 +11,15 @@ This program lets you type a message, turns it into a UART-style packet, checks 
 - [DATA]  N bytes: your message
 - [CHK]   1 byte: checksum = (LEN + sum(DATA)) % 256
 
-Example for "Hi":
+### Example for "Hello":
 ```
-AA 02 48 69 B3
+AA 05 48 65 6C 6C 6F 8A
+│   │  │              │
+│   │  └─ ASCII "Hello" ─┘
+│   └─ Length (5) ─┘
+└─ Start byte (0xAA) ─┘
+                └─ Checksum ─┘
 ```
-- AA = start
-- 02 = length
-- 48 69 = 'H' 'i' in ASCII
-- B3 = checksum
 
 ## How to Build and Run
 1. Open a terminal in this folder
