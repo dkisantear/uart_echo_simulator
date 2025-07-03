@@ -1,0 +1,13 @@
+# Ignore build artifacts
+*.o
+*.out
+*.exe
+/build/
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+.DS_Store 
