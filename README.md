@@ -1,130 +1,48 @@
 # UART Echo Simulator
 
-A C-based simulation of UART (Universal Asynchronous Receiver-Transmitter) communication that demonstrates packet formatting, error detection, and echo functionality.
+A simple C project to simulate UART (serial) communication and packet handling.
 
-## Overview
-
-This project simulates a basic UART communication interface where:
-- User input is formatted into packets with start byte, length, data, and checksum
-- Packets are parsed and validated for integrity
-- Valid packets are echoed back to demonstrate the communication loop
+## What is this?
+This program lets you type a message, turns it into a UART-style packet, checks it, and echoes it back. It's a personal summer project to learn about reading, writing, and buffering data in C.
 
 ## Packet Format
+- [START] 1 byte: 0xAA (marks start)
+- [LEN]   1 byte: number of data bytes
+- [DATA]  N bytes: your message
+- [CHK]   1 byte: checksum = (LEN + sum(DATA)) % 256
 
-The simulator uses a simple packet format: `[START][LEN][DATA][CHK]`
-
-- **START**: 1 byte (0xAA) - Marks the beginning of a packet
-- **LEN**: 1 byte - Number of data bytes
-- **DATA**: N bytes - Actual payload (N = LEN)
-- **CHK**: 1 byte - Checksum (LEN + sum of DATA bytes) % 256
-
-### Example Packet
-For the string "Hello":
+Example for "Hi":
 ```
-AA 05 48 65 6C 6C 6F 8A
-│   │  │              │
-│   │  └─ ASCII "Hello" ─┘
-│   └─ Length (5) ─┘
-└─ Start byte (0xAA) ─┘
+AA 02 48 69 B3
 ```
+- AA = start
+- 02 = length
+- 48 69 = 'H' 'i' in ASCII
+- B3 = checksum
+
+## How to Build and Run
+1. Open a terminal in this folder
+2. Run:
+   ```sh
+   gcc -Wall -Wextra -std=c99 -o uart_echo_simulator src/main.c src/uart.c
+   ./uart_echo_simulator
+   ```
+3. Type a message and see the packet breakdown
+
+## Files
+- `src/uart.h`   — Packet struct and function declarations
+- `src/uart.c`   — Packet logic (build, parse, checksum)
+- `src/main.c`   — User input and echo logic
+- `Makefile`     — (Optional) For building with `make`
+- `DEV_LOG.md`   — My notes and progress
+- `docs/`        — Instructions and online test guide
 
 ## Features
+- Packet creation and parsing
+- Error checking (start byte, length, checksum)
+- Shows packet bytes and parsed message
+- Cross-platform (tested on WSL/Ubuntu)
 
-- ✅ Packet format definition with start byte, length, data, and checksum
-- ✅ UART header file with function declarations
-- ✅ UART implementation for packet parsing and building
-- ✅ Main program for simulating packet transmission
-- ✅ Error detection for invalid packets
-- ✅ Terminal output showing parsed data and packet details
-- ✅ Cross-platform compilation (Windows WSL/Ubuntu)
-
-## Project Structure
-
-```
-uart_echo_simulator/
-├── src/
-│   ├── uart.h          # Header file with packet struct and function declarations
-│   ├── uart.c          # UART implementation (parsing, building, checksum)
-│   └── main.c          # Main program and user interface
-├── docs/
-│   ├── instructions.md # Project specifications and checklist
-│   └── test_online.md  # Guide for online testing
-├── DEV_LOG.md          # Development log and progress tracking
-├── Makefile            # Build configuration
-├── .gitignore          # Git ignore rules
-└── README.md           # This file
-```
-
-## Installation & Usage
-
-### Prerequisites
-- GCC compiler (tested with Ubuntu 13.3.0)
-- WSL (Windows Subsystem for Linux) or Linux environment
-
-### Compilation
-```bash
-# Navigate to project directory
-cd uart_echo_simulator
-
-# Compile the program
-gcc -Wall -Wextra -std=c99 -o uart_echo_simulator src/main.c src/uart.c
-```
-
-### Running
-```bash
-# Execute the program
-./uart_echo_simulator
-
-# Example session:
-Enter data to send (max 256 chars): Hello World
-Built packet: AA 0B 48 65 6C 6C 6F 20 57 6F 72 6C 64 8F
-Packet parsed successfully! Data: Hello World
-Echoed packet: AA 0B 48 65 6C 6C 6F 20 57 6F 72 6C 64 8F
-```
-
-## Technical Details
-
-### Error Detection
-The simulator validates packets by checking:
-1. Minimum packet size (4 bytes)
-2. Correct start byte (0xAA)
-3. Sufficient data length
-4. Valid checksum
-
-### Checksum Algorithm
-```c
-checksum = (LEN + sum of all DATA bytes) % 256
-```
-
-### Key Functions
-- `uart_build_packet()` - Creates packets from raw data
-- `uart_parse_packet()` - Validates and parses received packets
-- `uart_compute_checksum()` - Calculates packet checksum
-- `uart_echo_packet()` - Displays packet contents
-
-## Development
-
-This project was developed as a learning exercise for:
-- C programming fundamentals
-- UART communication protocols
-- Packet formatting and error detection
-- Cross-platform development with WSL
-
-## Future Enhancements
-
-Potential stretch goals:
-- [ ] Ring buffer implementation for RX
-- [ ] Threading simulation for UART RX/processing
-- [ ] Multiple packet types support
-- [ ] Real-time packet visualization
-- [ ] Network socket simulation
-
-## License
-
-This project is open source and available under the MIT License.
-
----
-
-**Created by:** [Your Name]  
-**Date:** July 2025  
-**Purpose:** Educational project for learning UART communication and C programming 
+## Why I Made This
+Created by Dominique Kisantear on July 2, 2025.
+Personal summer project to understand how data is read, written, and stored in a buffer in C. 
